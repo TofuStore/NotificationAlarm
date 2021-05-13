@@ -15,18 +15,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +46,40 @@ public class MainActivity extends AppCompatActivity implements MyListener{
     static List<String> keywords = new ArrayList<>();
     public String teststring = "";
     public String addstring = "";
+    public String display = "";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        loadArray(getApplicationContext());
+
         new ReadNotifications().setListener(this);
+
+        Intent inn = getIntent();
+        Bundle b = inn.getExtras();
+
+        if(b!=null)
+        {
+            String j = (String) b.get("EXTRA_KEYWORD_ID");
+            addstring = j;
+            keywords.add(j);
+            saveArray();
+            Log.v("keywords length is", "" + keywords.size());
+        }
+        Log.v("addstring is", "" + addstring);
+
+
+        final TextView wordlist = findViewById(R.id.textView);
+        for(int i=0; i<keywords.size(); i++){
+            display = display + keywords.get(i) + "\n";
+        }
+        //Log.v("number of words", "" + keywords.size());
+        wordlist.setText(display);
 
         //turn this into a button
         startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
@@ -56,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements MyListener{
                 CharSequence name = getString(R.string.app_name);
                 String description = getString(R.string.app_name);
                 int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                NotificationChannel channel = new NotificationChannel("NotificationAlarm", name, importance);
+                NotificationChannel channel = new NotificationChannel("chungus", name, importance);
                 channel.setDescription(description);
                 // Register the channel with the system; you can't change the importance
                 // or other notification behaviors after this
@@ -65,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements MyListener{
         }
 
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotificationAlarm")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "chungus")
                 .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentTitle("Chungus")
                 .setContentText("beeg chungus")
@@ -92,13 +125,28 @@ public class MainActivity extends AppCompatActivity implements MyListener{
                 notificationManager.notify(1, builder.build());
             }
         });
+
+        Button btn = findViewById(R.id.clearButton);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                keywords.clear();
+                saveArray();
+                wordlist.setText("");
+            }
+
+        });
+
+
+
     }
+
 
     @Override
     public void setValue (String packageName) {
         teststring = packageName;
         Log.v("teststring", "is " + teststring);
-
+/*
         Intent inn = getIntent();
         Bundle b = inn.getExtras();
 
@@ -110,8 +158,10 @@ public class MainActivity extends AppCompatActivity implements MyListener{
         }
         Log.v("addstring is", "" + addstring);
 
-        for(int i=0; i<keywords.size(); i++){
+ */
 
+        for(int i=0; i<keywords.size(); i++){
+            Log.v("number of words", "" + keywords.size());
             if(teststring.contains(keywords.get(i))){
                 if(AlarmPlayer.isPlaying == false) {
                     AlarmPlayer.SoundPlayer(getApplicationContext(), R.raw.fullmetal);
@@ -154,6 +204,35 @@ public class MainActivity extends AppCompatActivity implements MyListener{
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         notificationManager.notify(1, builder3.build());
+    }
+
+    public boolean saveArray()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor mEdit1 = sp.edit();
+        /* sKey is an array */
+        mEdit1.putInt("Status_size", keywords.size());
+
+        for(int i=0;i<keywords.size();i++)
+        {
+            mEdit1.remove("Status_" + i);
+            mEdit1.putString("Status_" + i, keywords.get(i));
+        }
+
+        return mEdit1.commit();
+    }
+
+    public static void loadArray(Context mContext)
+    {
+        SharedPreferences mSharedPreference1 =   PreferenceManager.getDefaultSharedPreferences(mContext);
+        keywords.clear();
+        int size = mSharedPreference1.getInt("Status_size", 0);
+
+        for(int i=0;i<size;i++)
+        {
+            keywords.add(mSharedPreference1.getString("Status_" + i, null));
+        }
+
     }
 
 

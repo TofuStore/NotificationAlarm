@@ -24,17 +24,19 @@
         android:layout_width="wrap_content"
         android:layout_height="432dp"
         android:layout_gravity="end|bottom"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="26dp" />
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="198dp"
         android:layout_height="238dp"
-        android:text="TextView"
+        android:layout_marginBottom="225dp"
+        android:textAlignment="center"
         card_view:layout_constraintBottom_toBottomOf="parent"
         card_view:layout_constraintEnd_toEndOf="parent"
-        card_view:layout_constraintHorizontal_bias="0.5"
         card_view:layout_constraintStart_toStartOf="parent"
         card_view:layout_constraintTop_toTopOf="parent"
         card_view:layout_constraintVertical_bias="0.498" />
@@ -44,14 +46,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="136dp"
-        android:layout_marginTop="207dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="137dp"
-        android:layout_marginBottom="20dp"
         android:text="Words being checked:"
         card_view:layout_constraintBottom_toTopOf="@+id/textView"
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"
         card_view:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="CLEAR"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toBottomOf="@+id/textView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
