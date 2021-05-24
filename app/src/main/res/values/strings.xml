@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">NotificationAlarm</string>
+    <string name="case_sensitive">Case Sensitive</string>
+    <string name="clear">CLEAR</string>
+    <string name="words_being_checked">Words being checked:</string>
+    <string name="alarm_sound">Alarm Sound</string>
+    <string-array name="alarms_array">
+        <item>Default</item>
+        <item>Fullmetal</item>
+        <item>Chungus</item>
+    </string-array>
 </resources>

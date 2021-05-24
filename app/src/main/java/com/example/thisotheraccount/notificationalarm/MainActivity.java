@@ -3,36 +3,27 @@ package com.example.thisotheraccount.notificationalarm;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements MyListener{
     public String teststring = "";
     public String addstring = "";
     public String display = "";
+    public int alarmNumber;
+    public boolean checked = false;
 
 
 
@@ -62,6 +55,28 @@ public class MainActivity extends AppCompatActivity implements MyListener{
 
         Intent inn = getIntent();
         Bundle b = inn.getExtras();
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.alarms_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        loadSpinner(spinner);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                alarmNumber = position;
+                saveSpinner();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                alarmNumber = 0;
+            }
+
+        });
 
         if(b!=null)
         {
@@ -137,8 +152,6 @@ public class MainActivity extends AppCompatActivity implements MyListener{
 
         });
 
-
-
     }
 
 
@@ -159,17 +172,33 @@ public class MainActivity extends AppCompatActivity implements MyListener{
         Log.v("addstring is", "" + addstring);
 
  */
-
-        for(int i=0; i<keywords.size(); i++){
-            Log.v("number of words", "" + keywords.size());
-            if(teststring.contains(keywords.get(i))){
-                if(AlarmPlayer.isPlaying == false) {
-                    AlarmPlayer.SoundPlayer(getApplicationContext(), R.raw.fullmetal);
-                    showNotification(keywords.get(i));
-                    break;
+        final CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox);
+        if(checkBox.isChecked()){
+            for(int i=0; i<keywords.size(); i++){
+                Log.v("number of words", "" + keywords.size());
+                if(teststring.contains(keywords.get(i))){
+                    if(AlarmPlayer.isPlaying == false) {
+                        AlarmPlayer.SoundPlayer(getApplicationContext(), findAlarm(alarmNumber));
+                        showNotification(keywords.get(i));
+                        break;
+                    }
+                }
+            }
+        }else{
+            String teststring2 = teststring.toLowerCase();
+            for(int i=0; i<keywords.size(); i++){
+                Log.v("lowercase word", "" + keywords.get(i).toLowerCase());
+                if(teststring2.contains(keywords.get(i).toLowerCase())){
+                    if(AlarmPlayer.isPlaying == false) {
+                        AlarmPlayer.SoundPlayer(getApplicationContext(), findAlarm(alarmNumber));
+                        showNotification(keywords.get(i));
+                        break;
+                    }
                 }
             }
         }
+
+
 
     }
 
@@ -224,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements MyListener{
 
     public static void loadArray(Context mContext)
     {
-        SharedPreferences mSharedPreference1 =   PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreference1 = PreferenceManager.getDefaultSharedPreferences(mContext);
         keywords.clear();
         int size = mSharedPreference1.getInt("Status_size", 0);
 
@@ -233,6 +262,35 @@ public class MainActivity extends AppCompatActivity implements MyListener{
             keywords.add(mSharedPreference1.getString("Status_" + i, null));
         }
 
+    }
+
+    public void saveSpinner(){
+        SharedPreferences sharedPref = getSharedPreferences("FileName",0);
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putInt("userChoiceSpinner",alarmNumber);
+        prefEditor.commit();
+    }
+
+    public void loadSpinner(Spinner spinner){
+        SharedPreferences sharedPref = getSharedPreferences("FileName",MODE_PRIVATE);
+        int spinnerValue = sharedPref.getInt("userChoiceSpinner",-1);
+        if(spinnerValue != -1) {
+            // set the selected value of the spinner
+            spinner.setSelection(spinnerValue);
+        }
+    }
+
+    public int findAlarm(int num){
+        if(num == 0){
+            return R.raw.fart;
+        }
+        if(num == 1){
+            return R.raw.fullmetal;
+        }
+        if(num == 2){
+            return R.raw.chungus;
+        }
+        return 0;
     }
 
 
