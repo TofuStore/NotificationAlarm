@@ -96,8 +96,7 @@ public class MainActivity extends AppCompatActivity implements MyListener{
         //Log.v("number of words", "" + keywords.size());
         wordlist.setText(display);
 
-        //turn this into a button
-        startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -138,6 +137,14 @@ public class MainActivity extends AppCompatActivity implements MyListener{
             @Override
             public void onClick(View view) {
                 notificationManager.notify(1, builder.build());
+            }
+        });
+
+        FloatingActionButton fab3 = findViewById(R.id.settingsButton);
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
             }
         });
 
@@ -268,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements MyListener{
         SharedPreferences sharedPref = getSharedPreferences("FileName",0);
         SharedPreferences.Editor prefEditor = sharedPref.edit();
         prefEditor.putInt("userChoiceSpinner",alarmNumber);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public void loadSpinner(Spinner spinner){

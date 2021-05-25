@@ -16,7 +16,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:contentDescription="create button"
-        android:src="@drawable/ic_launcher_background"
+        android:src="@android:drawable/ic_menu_add"
         card_view:layout_constraintBottom_toBottomOf="parent"
         card_view:layout_constraintEnd_toEndOf="parent" />
 
@@ -25,11 +25,14 @@
         android:layout_width="wrap_content"
         android:layout_height="432dp"
         android:layout_gravity="end|bottom"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="101dp"
+        android:layout_marginEnd="102dp"
         android:layout_marginBottom="20dp"
+        android:contentDescription="TODO"
+        android:src="@android:drawable/ic_lock_silent_mode_off"
         card_view:layout_constraintBottom_toBottomOf="parent"
-        card_view:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="TODO" />
+        card_view:layout_constraintEnd_toStartOf="@+id/fab"
+        card_view:layout_constraintStart_toEndOf="@+id/settingsButton" />
 
     <TextView
         android:id="@+id/textView"
@@ -98,6 +101,17 @@
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"
         card_view:layout_constraintTop_toBottomOf="@+id/checkBox" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/settingsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        card_view:layout_constraintBottom_toBottomOf="parent"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:srcCompat="@android:drawable/ic_menu_preferences" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
